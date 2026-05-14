@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MS Excel Quiz — CAP31201</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Excel Theme Colors */
+  --bg: #0d1210;
+  --surface: #141f18;
+  --surface2: #1e2e24;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.15);
+  --text: #f4f4f5;
+  --muted: #a1b0a6;
+  --accent: #107c41; /* Official Excel Green */
+  --accent2: #185c37; /* Darker Excel Green */
+  --green: #2ecc71;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --pill-bg: rgba(16, 124, 65, 0.15);
+  --pill-border: rgba(16, 124, 65, 0.4);
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+/* bg grid */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(16, 124, 65, 0.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(16, 124, 65, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* ── SCREENS ── */
+.screen { display: none; animation: fadeUp 0.4s ease; }
+.screen.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+
+/* ── NAV ── */
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 0; margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 0.05em; color: var(--accent); }
+.nav-logo span { color: var(--muted); font-weight: 400; }
+.nav-links { display: flex; gap: 6px; }
+.nav-btn { background: transparent; border: 1px solid var(--border2); color: var(--muted); padding: 6px 14px; border-radius: 40px; font-size: 12px; font-family: var(--font-body); cursor: pointer; transition: all 0.2s; }
+.nav-btn:hover, .nav-btn.active { border-color: var(--accent); color: var(--accent); background: var(--pill-bg); }
+
+/* ── HERO ── */
+.hero { padding: 60px 0 40px; }
+.hero-tag { display: inline-flex; align-items: center; gap: 8px; background: var(--pill-bg); border: 1px solid var(--pill-border); color: var(--green); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 14px; border-radius: 40px; margin-bottom: 28px; }
+.hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+h1 { font-family: var(--font-display); font-size: clamp(36px, 6vw, 58px); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 18px; }
+h1 em { font-style: normal; color: var(--accent); }
+.hero-sub { font-size: 15px; color: var(--muted); max-width: 480px; margin-bottom: 36px; line-height: 1.7; }
+.hero-stats { display: flex; gap: 28px; margin-bottom: 40px; }
+.stat-n { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--text); }
+.stat-l { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+
+/* ── REGISTER FORM ── */
+.register-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; padding: 32px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.register-card h2 { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.register-card p { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.form-row.full { grid-template-columns: 1fr; }
+label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+input, select { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: var(--font-body); font-size: 14px; padding: 10px 14px; outline: none; transition: border-color 0.2s; }
+input:focus, select:focus { border-color: var(--accent); }
+.topic-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.topic-toggle { background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); padding: 6px 14px; border-radius: 40px; font-size: 12px; cursor: pointer; font-family: var(--font-body); transition: all 0.2s; }
+.topic-toggle.on { background: var(--pill-bg); border-color: var(--pill-border); color: var(--green); }
+
+/* ── BUTTONS ── */
+.btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-body); font-size: 14px; font-weight: 700; padding: 11px 22px; border-radius: 40px; cursor: pointer; border: none; transition: all 0.2s; text-decoration: none; color: #fff; background: var(--accent); }
+.btn:hover { background: #13924c; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16, 124, 65, 0.3); }
+.btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--muted); font-weight: 500; }
+.btn-ghost:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); box-shadow: none; }
+
+/* ── PROGRESS ── */
+.progress-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.progress-label { font-size: 12px; color: var(--muted); }
+.progress-score { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--green); }
+.progress-track { height: 3px; background: var(--surface2); border-radius: 3px; margin-bottom: 28px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 3px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+
+/* ── QUESTION CARD ── */
+.q-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; padding: 28px 28px 20px; margin-bottom: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+.q-section-tag { display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green); background: rgba(46, 204, 113, 0.12); border: 1px solid rgba(46, 204, 113, 0.3); padding: 3px 10px; border-radius: 40px; margin-bottom: 14px; font-weight: 700;}
+.q-text { font-family: var(--font-display); font-size: 18px; font-weight: 600; line-height: 1.4; color: var(--text); margin-bottom: 22px; }
+.options { display: grid; gap: 9px; }
+.opt-btn { display: flex; align-items: flex-start; gap: 12px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; padding: 13px 16px; text-align: left; cursor: pointer; width: 100%; font-family: var(--font-body); font-size: 14px; color: var(--text); transition: all 0.2s; line-height: 1.5; }
+.opt-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(16, 124, 65, 0.08); }
+.opt-btn:disabled { cursor: default; }
+.opt-letter { min-width: 24px; height: 24px; border-radius: 6px; background: var(--surface); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--muted); font-family: var(--font-display); flex-shrink: 0; margin-top: 1px; }
+.opt-btn.correct { border-color: var(--green); background: rgba(46, 204, 113, 0.08); }
+.opt-btn.correct .opt-letter { background: var(--green); color: #000; border-color: var(--green); }
+.opt-btn.wrong { border-color: var(--red); background: rgba(239, 68, 68, 0.08); }
+.opt-btn.wrong .opt-letter { background: var(--red); color: #fff; border-color: var(--red); }
+
+/* ── FEEDBACK ── */
+.feedback-box { border-radius: 10px; padding: 14px 16px; font-size: 13px; line-height: 1.65; margin-bottom: 14px; display: none; }
+.feedback-box.correct { background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); color: #2ecc71; }
+.feedback-box.wrong { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; }
+.feedback-box strong { display: block; margin-bottom: 4px; font-family: var(--font-display); font-size: 13px; }
+
+/* ── DISCUSSION ── */
+.discussion-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 16px; display: none; }
+.discussion-section h4 { font-family: var(--font-display); font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+.comments-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; max-height: 260px; overflow-y: auto; }
+.comment { background: var(--surface2); border-radius: 8px; padding: 10px 12px; font-size: 13px; border-left: 2px solid var(--accent); }
+.comment-author { font-weight: 600; color: var(--green); font-size: 12px; margin-bottom: 3px; }
+.comment-text { color: var(--text); line-height: 1.5; }
+.comment-time { font-size: 10px; color: var(--muted); margin-top: 4px; }
+.comment-input-row { display: flex; gap: 8px; }
+.comment-input-row input { flex: 1; }
+.no-comments { font-size: 12px; color: var(--muted); font-style: italic; }
+
+/* ── NAV BUTTONS ── */
+.quiz-nav { display: flex; align-items: center; justify-content: space-between; }
+
+/* ── RESULT ── */
+.result-hero { text-align: center; padding: 60px 0 40px; }
+.result-ring { width: 140px; height: 140px; border-radius: 50%; background: conic-gradient(var(--accent) var(--pct, 0%), var(--surface2) 0%); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 0 40px rgba(16, 124, 65, 0.2); }
+.result-ring-inner { width: 108px; height: 108px; border-radius: 50%; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.result-pct { font-family: var(--font-display); font-size: 32px; font-weight: 800; }
+.result-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.result-title { font-family: var(--font-display); font-size: 28px; font-weight: 700; margin-bottom: 10px; }
+.result-sub { color: var(--muted); max-width: 480px; margin: 0 auto 32px; font-size: 14px; line-height: 1.65; }
+.result-breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 36px; }
+.breakdown-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; padding: 18px; text-align: center; }
+.breakdown-n { font-family: var(--font-display); font-size: 28px; font-weight: 700; }
+.breakdown-n.green { color: var(--green); }
+.breakdown-n.red { color: var(--red); }
+.breakdown-n.amber { color: var(--amber); }
+
+/* ── LEADERBOARD ── */
+.lb-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+.lb-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.lb-header h3 { font-family: var(--font-display); font-size: 17px; font-weight: 700; }
+.lb-row { display: flex; align-items: center; gap: 16px; padding: 14px 24px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.lb-row:last-child { border-bottom: none; }
+.lb-row:hover { background: var(--surface2); }
+.lb-rank { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--muted); width: 24px; text-align: center; flex-shrink: 0; }
+.lb-rank.gold { color: #f59e0b; }
+.lb-rank.silver { color: #d4d4d8; }
+.lb-rank.bronze { color: #b45309; }
+.lb-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.lb-info { flex: 1; }
+.lb-name { font-size: 14px; font-weight: 600; }
+.lb-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.lb-score-wrap { text-align: right; }
+.lb-score { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--green); }
+.lb-pct { font-size: 11px; color: var(--muted); }
+.lb-empty { padding: 36px 24px; text-align: center; color: var(--muted); font-size: 13px; }
+
+/* ── BADGES ── */
+.badge { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 40px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.badge-you { background: rgba(16, 124, 65, 0.15); color: var(--green); border: 1px solid var(--pill-border); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+@media(max-width: 560px) { .form-row { grid-template-columns: 1fr; } .result-breakdown { grid-template-columns: 1fr 1fr; } h1 { font-size: 32px; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="nav-logo">CAP31201<span>/excel</span></div>
+    <div class="nav-links">
+      <button class="nav-btn active" onclick="showScreen('home')">Worksheet</button>
+      <button class="nav-btn" onclick="showScreen('leaderboard')">Dashboard</button>
+    </div>
+  </nav>
+
+  <div id="screen-home" class="screen active">
+    <div class="hero">
+      <div class="hero-tag">CAP31201 · DATA ANALYSIS</div>
+      <h1>Master <em>Spreadsheets</em></h1>
+      <p class="hero-sub">40 comprehensive questions covering the Excel Interface, Cell Referencing, Formatting, Logical Functions (IF), Lookup Functions (VLOOKUP), and Charting.</p>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-n">40</div><div class="stat-l">Formulas</div></div>
+        <div class="stat"><div class="stat-n">5</div><div class="stat-l">Worksheets</div></div>
+        <div class="stat"><div class="stat-n" id="stat-players">0</div><div class="stat-l">Calculations</div></div>
+      </div>
+    </div>
+
+    <div class="register-card">
+      <h2>Initialize Session</h2>
+      <p>Enter your credentials to track your progress on the data dashboard.</p>
+      <div class="form-row">
+        <div>
+          <label>Analyst Name</label>
+          <input type="text" id="inp-name" placeholder="e.g. Leo Mbamera">
+        </div>
+        <div>
+          <label>ID Number</label>
+          <input type="text" id="inp-reg" placeholder="e.g. 2501013**">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div>
+          <label>Filter Functions</label>
+          <div class="topic-grid" id="topic-grid"></div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="startQuiz()" style="width:100%">Compile Data →</button>
+    </div>
+  </div>
+
+  <div id="screen-quiz" class="screen">
+    <div style="padding-top: 24px;">
+      <div class="progress-header">
+        <span class="progress-label" id="prog-label">Cell 1 of 40</span>
+        <span class="progress-score" id="prog-score">0 pts</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+
+      <div class="q-card">
+        <div class="q-section-tag" id="q-section"></div>
+        <div class="q-text" id="q-text"></div>
+        <div class="options" id="options"></div>
+      </div>
+
+      <div class="feedback-box" id="feedback"></div>
+
+      <div class="discussion-section" id="discussion-section">
+        <h4>💬 Cell Comments</h4>
+        <div class="comments-list" id="comments-list"></div>
+        <div class="comment-input-row">
+          <input type="text" id="comment-input" placeholder="Add an annotation…" maxlength="200" onkeydown="if(event.key==='Enter')postComment()">
+          <button class="btn btn-ghost btn-sm" onclick="postComment()">Insert</button>
+        </div>
+      </div>
+
+      <div class="quiz-nav" style="margin-top:20px;">
+        <button class="btn btn-ghost" onclick="showScreen('home')">← Close File</button>
+        <button class="btn btn-primary" id="next-btn" onclick="nextQ()" style="display:none">Next Cell →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-result" class="screen">
+    <div class="result-hero">
+      <div class="result-ring" id="result-ring">
+        <div class="result-ring-inner">
+          <div class="result-pct" id="result-pct">0%</div>
+          <div class="result-label">accuracy</div>
+        </div>
+      </div>
+      <div class="result-title" id="result-title">Calculation Complete</div>
+      <div class="result-sub" id="result-sub"></div>
+      <div class="result-breakdown">
+        <div class="breakdown-card"><div class="breakdown-n" style="color:var(--green)" id="bd-correct">0</div><div class="breakdown-l">Valid Output</div></div>
+        <div class="breakdown-card"><div class="breakdown-n" style="color:var(--red)" id="bd-wrong">0</div><div class="breakdown-l">#VALUE! Errors</div></div>
+        <div class="breakdown-card"><div class="breakdown-n" style="color:var(--amber)" id="bd-total">0</div><div class="breakdown-l">Total Cells</div></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button class="btn btn-ghost" onclick="restartQuiz()">Recalculate</button>
+        <button class="btn btn-primary" onclick="showScreen('leaderboard')">View Dashboard →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-leaderboard" class="screen">
+    <div style="padding-top: 32px;">
+      <h2 style="font-family:var(--font-display);font-size:26px;font-weight:800;margin-bottom:6px;">Data Dashboard</h2>
+      <p class="text-muted" style="font-size:13px;margin-bottom:28px;">Performance metrics — all analysts this session.</p>
+      <div class="lb-card">
+        <div class="lb-header">
+          <h3>Top Analysts</h3>
+          <span class="text-muted" style="font-size:12px" id="lb-count">0 records</span>
+        </div>
+        <div id="lb-rows"></div>
+      </div>
+      <div style="text-align:center">
+        <button class="btn btn-ghost" onclick="showScreen('home')">Return to Workbook</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// EXCEL QUESTION BANK (40 Questions)
+const QUESTIONS = [
+  // Interface & Basics
+  {s:"Excel Interface", q:"What is the primary difference between a Workbook and a Worksheet in Excel?", opts:["A worksheet contains multiple workbooks", "A workbook is an entire Excel file, which can contain multiple worksheets", "A workbook is for text, while a worksheet is for numbers", "They are exactly the same thing"], ans:1, exp:"An Excel file is a Workbook. Inside that workbook, you can add multiple pages called Worksheets (e.g., Sheet1, Sheet2)."},
+  {s:"Excel Interface", q:"Which element of the Excel interface displays the address of the currently active cell?", opts:["The Formula Bar", "The Name Box", "The Quick Access Toolbar", "The Status Bar"], ans:1, exp:"The Name Box, located to the left of the formula bar, displays the cell reference (e.g., A1) of the currently selected active cell."},
+  {s:"Excel Interface", q:"The intersection of a row and a column in Excel is called a:", opts:["Range", "Cell", "Grid point", "Reference"], ans:1, exp:"A cell is the basic unit of a worksheet where data is entered, formed by the intersection of a column (letter) and a row (number)."},
+  {s:"Excel Interface", q:"Which part of the Excel window displays the actual contents or underlying formula of the active cell, allowing you to edit it?", opts:["The Ribbon", "The Name Box", "The Formula Bar", "The Worksheet Tab"], ans:2, exp:"The Formula Bar shows the raw data or formula typed into the cell, whereas the cell itself might just show the calculated result."},
+  {s:"Excel Interface", q:"By default, how are columns and rows identified in an Excel worksheet?", opts:["Columns by Numbers, Rows by Letters", "Both Columns and Rows by Numbers", "Columns by Letters, Rows by Numbers", "Both Columns and Rows by Letters"], ans:2, exp:"Columns run vertically and are labeled with letters (A, B, C), while rows run horizontally and are labeled with numbers (1, 2, 3)."},
+  
+  // Data Entry & Formatting
+  {s:"Formatting Data", q:"If you type a long sentence into cell A1 and it spills over into cell B1, which formatting tool forces the text to fit on multiple lines within cell A1?", opts:["Merge & Center", "Wrap Text", "Shrink to Fit", "Format Painter"], ans:1, exp:"Wrap Text forces long text to display on multiple lines within a single cell without widening the column."},
+  {s:"Formatting Data", q:"What does the 'Merge & Center' button do?", opts:["Combines multiple selected cells into one larger cell and centers the content", "Centers the text vertically and horizontally in one cell", "Calculates the average of the selected cells", "Wraps text and centers it automatically"], ans:0, exp:"Merge & Center takes a range of selected cells, merges them into one single cell, and centers the text within it (often used for titles)."},
+  {s:"Formatting Data", q:"You want to copy the bold, blue, currency formatting from cell A1 and apply it to cell B5. Which tool should you use?", opts:["Copy and Paste Values", "AutoFill", "Format Painter", "Conditional Formatting"], ans:2, exp:"The Format Painter (the paintbrush icon) copies only the formatting of a cell and allows you to 'paint' it onto another cell or range."},
+  {s:"Formatting Data", q:"When entering data, how does Excel align Text versus Numbers by default?", opts:["Text is right-aligned, Numbers are left-aligned", "Text is left-aligned, Numbers are right-aligned", "Both are centered", "Both are left-aligned"], ans:1, exp:"By default, Excel aligns text to the left side of the cell and numbers (values) to the right side."},
+  {s:"Formatting Data", q:"What happens if you type a number into a cell that is too wide to be displayed in the current column width?", opts:["Excel deletes the extra digits", "Excel wraps the text", "Excel displays ######", "Excel automatically merges with the next cell"], ans:2, exp:"When a column is too narrow to display a formatted number or date, Excel fills the cell with pound signs (######). You must widen the column to see the data."},
+
+  // Cell Referencing
+  {s:"Cell Referencing", q:"What symbol is used in a cell reference to make it an Absolute Reference (meaning it won't change when copied)?", opts:["# (Hash)", "& (Ampersand)", "$ (Dollar sign)", "@ (At symbol)"], ans:2, exp:"The dollar sign ($) is used to 'lock' a column letter and/or row number (e.g., $A$1) so it does not adjust when the formula is copied."},
+  {s:"Cell Referencing", q:"If you enter the formula `=A1+B1` in cell C1 and then copy it down to cell C2, what will the formula in C2 automatically become?", opts:["=A1+B1", "=A2+B2", "=$A$1+$B$1", "=C1+C2"], ans:1, exp:"Because `=A1+B1` uses Relative References, Excel automatically adjusts the row numbers down by one when you copy the formula down a row."},
+  {s:"Cell Referencing", q:"In the cell reference `$B4`, what exactly is locked?", opts:["Both the column and the row are locked", "The column is locked, but the row is relative", "The row is locked, but the column is relative", "Neither is locked"], ans:1, exp:"This is a Mixed Reference. The $ is only in front of the 'B', meaning the column B is locked, but the row 4 will change if copied vertically."},
+  {s:"Cell Referencing", q:"Which keyboard shortcut toggles a cell reference between Relative, Absolute, and Mixed states (e.g., A1 to $A$1)?", opts:["F2", "F4", "Ctrl + R", "Alt + Enter"], ans:1, exp:"Pressing F4 while the cursor is on a cell reference in the formula bar cycles through the different absolute/relative locking combinations."},
+  {s:"Cell Referencing", q:"Why is Absolute Referencing critical when applying a fixed sales tax rate (located in cell H1) to a column of prices?", opts:["To format the numbers as currency", "To ensure the formula always multiplies by H1 instead of shifting down to empty cells", "To make the formula calculate faster", "To hide the tax rate from other users"], ans:1, exp:"If you multiply a column of prices by H1 using a relative reference, copying the formula down will change H1 to H2, H3, etc., resulting in errors. Using $H$1 locks it."},
+
+  // Basic Formulas & Functions
+  {s:"Formulas & Functions", q:"Every formula or function in Excel MUST begin with which character?", opts:["+", "(", "=", "$"], ans:2, exp:"Excel recognizes that you are entering a calculation or a function only when the first character is an equals sign (=)."},
+  {s:"Formulas & Functions", q:"According to the order of operations in Excel (PEMDAS), which part of the formula `=5+2*3^2` will be calculated FIRST?", opts:["5+2", "2*3", "3^2", "It calculates strictly left to right"], ans:2, exp:"Exponents (^) are calculated first. So 3^2 = 9. Then multiplication (2*9 = 18). Then addition (5+18 = 23)."},
+  {s:"Formulas & Functions", q:"What is the purpose of the `AVERAGE` function?", opts:["It adds all numbers and returns the sum", "It finds the middle value in a sorted list", "It calculates the arithmetic mean of a range of cells", "It counts how many cells contain numbers"], ans:2, exp:"The AVERAGE function adds all the numerical values in a range and divides by the count of those values to find the mean."},
+  {s:"Formulas & Functions", q:"If you want to find the highest sales figure in a column of 100 numbers, which function should you use?", opts:["=HIGH()", "=MAX()", "=TOP()", "=LARGE()"], ans:1, exp:"The MAX function evaluates a range of cells and returns the largest (maximum) numerical value."},
+  {s:"Formulas & Functions", q:"What is the difference between the `=COUNT()` and `=COUNTA()` functions?", opts:["COUNT only counts cells with numbers; COUNTA counts any cell that is not empty", "COUNT counts text; COUNTA counts numbers", "They do the exact same thing", "COUNT counts empty cells; COUNTA counts filled cells"], ans:0, exp:"COUNT specifically ignores text and only tallies numeric values. COUNTA tallies 'Count All'—any cell that contains data (text, numbers, or errors)."},
+  {s:"Formulas & Functions", q:"What does the `=TODAY()` function do?", opts:["Inserts the current date and time", "Inserts the current date, which will update automatically each day", "Inserts the date the file was created", "Calculates the number of days between two dates"], ans:1, exp:"=TODAY() returns the current system date. It does not include time (that is =NOW()), and it is volatile, meaning it updates every time the sheet recalculates."},
+  {s:"Formulas & Functions", q:"If cell A1 contains 'John' and B1 contains 'Doe', what formula will combine them to output 'John Doe'?", opts:["=A1+B1", "=CONCATENATE(A1, B1)", '=A1&" "&B1', "=MERGE(A1,B1)"], ans:2, exp:"The ampersand (&) operator joins text. Adding '\" \"' inserts the necessary space between the first and last name."},
+  {s:"Formulas & Functions", q:"If you see the error `#DIV/0!` in a cell, what does it mean?", opts:["The column is too narrow to display the number", "Excel doesn't recognize the function name", "A formula is attempting to divide a number by zero or an empty cell", "A cell reference in the formula was deleted"], ans:2, exp:"This is the 'Divide by Zero' error, which occurs if the denominator in a division formula is 0 or references a blank cell."},
+
+  // Logical Functions (IF)
+  {s:"Logical Functions", q:"What are the three required arguments in a standard `=IF()` function?", opts:["Logical_test, Value_if_true, Value_if_false", "Range, Criteria, Sum_range", "Lookup_value, Table_array, Col_index", "Text1, Text2, Text3"], ans:0, exp:"The syntax is =IF(logical_test, [value_if_true], [value_if_false])."},
+  {s:"Logical Functions", q:"If cell A1 is 75, what will the formula `=IF(A1>=50, \"Pass\", \"Fail\")` return?", opts:["Fail", "Pass", "TRUE", "Error"], ans:1, exp:"Since 75 is greater than or equal to 50, the logical test is TRUE, so it returns the first argument: 'Pass'."},
+  {s:"Logical Functions", q:"How do you use the `AND()` function inside an `IF()` statement?", opts:["=IF(A1 AND B1 > 10, \"Yes\", \"No\")", "=IF(AND(A1>10, B1>10), \"Yes\", \"No\")", "=IF(A1>10, AND(B1>10), \"Yes\", \"No\")", "=AND(IF(A1>10), \"Yes\", \"No\")"], ans:1, exp:"The AND function is placed as the logical_test argument: =IF(AND(condition1, condition2), true, false). Both conditions must be true for the IF to return true."},
+  {s:"Logical Functions", q:"What is a 'Nested IF' statement?", opts:["An IF function combined with a VLOOKUP", "An IF function that contains another IF function as its True or False argument", "An IF function used across multiple worksheets", "An IF function that returns a numerical value instead of text"], ans:1, exp:"Nesting means putting one function inside another. A nested IF replaces the value_if_false (or true) with another IF to test multiple conditions (e.g., grading A, B, C, D)."},
+  {s:"Logical Functions", q:"In the formula `=IF(A1>100, 10, IF(A1>50, 5, 0))`, if A1 equals 60, what is the result?", opts:["10", "5", "0", "FALSE"], ans:1, exp:"The first test (60>100) is FALSE. It moves to the second IF test (60>50), which is TRUE. Therefore, it returns 5."},
+  
+  // Lookup & Reference Functions
+  {s:"Lookup Functions", q:"What does the 'V' in `VLOOKUP` stand for?", opts:["Value", "Variable", "Vertical", "Validation"], ans:2, exp:"VLOOKUP stands for Vertical Lookup, because it searches for a value vertically down the first column of a table."},
+  {s:"Lookup Functions", q:"What is the correct syntax for a VLOOKUP function?", opts:["=VLOOKUP(table_array, lookup_value, col_index_num, range_lookup)", "=VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])", "=VLOOKUP(col_index_num, lookup_value, table_array)", "=VLOOKUP(range_lookup, table_array, lookup_value, col_index_num)"], ans:1, exp:"The proper order is: What you want to find (lookup_value), where you want to look for it (table_array), what column holds the answer (col_index_num), and whether you want an exact match (range_lookup)."},
+  {s:"Lookup Functions", q:"In a VLOOKUP function, what does setting the `range_lookup` argument to FALSE or 0 indicate?", opts:["The function should find the closest approximate match", "The function will search horizontally instead of vertically", "The function requires an EXACT match to return a result", "The function will ignore text and only look for numbers"], ans:2, exp:"FALSE (or 0) forces VLOOKUP to find an exact match. If it cannot find the exact value, it returns an #N/A error. TRUE (or 1) allows approximate matches."},
+  {s:"Lookup Functions", q:"If you are using VLOOKUP and the column that contains the data you want to retrieve is the third column in your selected table array, what is the `col_index_num`?", opts:["C", "3", "3rd", "A3"], ans:1, exp:"The column index number is simply the numeric position of the column within the selected table_array range, counting from left to right. So, it is 3."},
+  {s:"Lookup Functions", q:"If your lookup data is arranged in horizontal rows across the top of your sheet rather than vertical columns, which function should you use?", opts:["VLOOKUP", "HLOOKUP", "XLOOKUP", "INDEX"], ans:1, exp:"HLOOKUP stands for Horizontal Lookup. It searches the top row of a table array and returns a value in the same column from a specified row."},
+
+  // Data Analysis & Management
+  {s:"Data Analysis", q:"Which Excel feature allows you to temporarily hide rows that do not meet specific criteria (e.g., showing only 'Marketing' department employees)?", opts:["Sorting", "Filtering", "Conditional Formatting", "Data Validation"], ans:1, exp:"Filtering allows you to display only the records that meet certain criteria while temporarily hiding the rest. Sorting just reorders the visible rows."},
+  {s:"Data Analysis", q:"You want cells containing sales figures over $10,000 to automatically turn green. Which tool should you use?", opts:["Format Painter", "Cell Styles", "Conditional Formatting", "Data Validation"], ans:2, exp:"Conditional Formatting applies specific formatting (like colors, bolding, or data bars) to cells only when they meet specific logical rules or values."},
+  {s:"Data Analysis", q:"What is the purpose of 'Data Validation'?", opts:["To check for spelling errors in the sheet", "To lock the worksheet with a password", "To restrict the type of data or the values that users enter into a cell", "To automatically calculate sums and averages"], ans:2, exp:"Data validation is used to control what a user can enter into a cell, such as creating a drop-down list or forcing a date within a specific range."},
+  {s:"Data Analysis", q:"If you sort a dataset of names in 'Ascending' order, how will they be arranged?", opts:["From Z to A", "From largest number to smallest number", "From A to Z", "By the date they were entered"], ans:2, exp:"Ascending order arranges text alphabetically from A to Z, and numbers from smallest to largest."},
+
+  // Charts & Visualizations
+  {s:"Charts", q:"Which type of chart is best suited for showing the percentage breakdown of a whole (e.g., market share of 4 companies)?", opts:["Line Chart", "Column Chart", "Pie Chart", "Scatter Plot"], ans:2, exp:"Pie charts are specifically designed to show proportional parts of a 100% whole."},
+  {s:"Charts", q:"If you want to display trends over time (e.g., monthly sales for a year), which chart type is most appropriate?", opts:["Line Chart", "Pie Chart", "Radar Chart", "Doughnut Chart"], ans:0, exp:"Line charts are excellent for showing continuous data over time, making it easy to spot trends and changes."},
+  {s:"Charts", q:"What is the 'Legend' on an Excel chart?", opts:["The title at the top of the chart", "The box that identifies the patterns or colors assigned to the data series", "The numbers along the vertical Y-axis", "The underlying spreadsheet data"], ans:1, exp:"The legend is the key that explains what each color or line style represents in the chart."}
+];
+
+const TOPICS = [...new Set(QUESTIONS.map(q => q.s))];
+const AVATARS = ['#107c41','#185c37','#2ecc71','#f59e0b','#3498db','#e74c3c','#9b59b6'];
+
+let activeTopics = new Set(TOPICS);
+let quiz = [];
+let cur = 0, score = 0, answered = false;
+let currentUser = {name:'', reg:''};
+let leaderboard = JSON.parse(localStorage.getItem('cap31201_excel_lb') || '[]');
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if(id==='leaderboard') { renderLB(); document.querySelectorAll('.nav-btn')[1].classList.add('active'); }
+  else document.querySelectorAll('.nav-btn')[0].classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function buildTopicGrid(){
+  const g = document.getElementById('topic-grid');
+  g.innerHTML='';
+  TOPICS.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'topic-toggle on';
+    b.textContent = t;
+    b.onclick = function(){
+      if(activeTopics.has(t)){
+        if(activeTopics.size === 1) return;
+        activeTopics.delete(t); b.className='topic-toggle';
+      } else {
+        activeTopics.add(t); b.className='topic-toggle on';
+      }
+    };
+    g.appendChild(b);
+  });
+}
+
+function startQuiz(){
+  const name = document.getElementById('inp-name').value.trim();
+  const reg = document.getElementById('inp-reg').value.trim();
+  if(!name){ alert('Please enter your Analyst Name to continue.'); return; }
+  currentUser = { name, reg };
+  quiz = QUESTIONS.filter(q => activeTopics.has(q.s)).sort(()=>Math.random()-0.5);
+  if(quiz.length === 0){ alert('Select at least one module.'); return; }
+  cur = 0; score = 0; answered = false;
+  showScreen('quiz');
+  renderQ();
+}
+
+function renderQ(){
+  if(cur >= quiz.length){ endQuiz(); return; }
+  const q = quiz[cur];
+  const pct = (cur / quiz.length) * 100;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = `Cell ${cur+1} of ${quiz.length}`;
+  document.getElementById('prog-score').textContent = `Yield: ${score} pts`;
+  document.getElementById('q-section').textContent = q.s;
+  document.getElementById('q-text').innerHTML = q.q;
+  
+  const opts = document.getElementById('options');
+  opts.innerHTML='';
+  
+  // Randomize options
+  const shuffled = q.opts.map((opt, i) => ({opt, isCorrect: i===q.ans})).sort(() => Math.random() - 0.5);
+  const correctIdx = shuffled.findIndex(o => o.isCorrect);
+
+  const letters = ['A','B','C','D'];
+  shuffled.forEach((o,i)=>{
+    const b = document.createElement('button');
+    b.className='opt-btn';
+    b.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${o.opt}</span>`;
+    b.onclick = function(){ if(!answered) select(i, correctIdx, b, q.exp); };
+    opts.appendChild(b);
+  });
+  
+  document.getElementById('feedback').style.display='none';
+  document.getElementById('next-btn').style.display='none';
+  answered = false;
+  window.scrollTo(0,0);
+}
+
+function select(selectedIdx, correctIdx, btn, exp){
+  answered = true;
+  document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+  const fb = document.getElementById('feedback');
+  
+  if(selectedIdx === correctIdx){
+    btn.classList.add('correct');
+    score++;
+    fb.className='feedback-box correct';
+    fb.innerHTML=`<strong>✓ Formula Valid!</strong><br>${exp}`;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.opt-btn')[correctIdx].classList.add('correct');
+    fb.className='feedback-box wrong';
+    fb.innerHTML=`<strong>✗ Formula Error!</strong><br>${exp}`;
+  }
+  fb.style.display='block';
+  document.getElementById('next-btn').style.display='flex';
+  document.getElementById('discussion-section').style.display='block';
+  renderComments();
+}
+
+function nextQ(){
+  cur++;
+  renderQ();
+}
+
+function endQuiz(){
+  const result = { name: currentUser.name, reg: currentUser.reg, score, total: quiz.length, pct: Math.round((score / quiz.length) * 100), date: new Date().toLocaleDateString() };
+  leaderboard.push(result);
+  leaderboard.sort((a,b) => b.pct - a.pct);
+  leaderboard = leaderboard.slice(0, 10);
+  localStorage.setItem('cap31201_excel_lb', JSON.stringify(leaderboard));
+  
+  const pct = Math.round((score / quiz.length) * 100);
+  document.documentElement.style.setProperty('--pct', pct + '%');
+  document.getElementById('result-pct').textContent = pct + '%';
+  document.getElementById('result-title').textContent = pct >= 70 ? 'Calculation Complete' : pct >= 50 ? 'Formula Needs Work' : 'Review Required';
+  document.getElementById('result-sub').textContent = `You answered ${score} out of ${quiz.length} cells correctly. ` + (pct >= 70 ? 'Excellent spreadsheet analysis!' : pct >= 50 ? 'Keep practicing Excel functions!' : 'Study the formulas and try again.');
+  document.getElementById('bd-correct').textContent = score;
+  document.getElementById('bd-wrong').textContent = quiz.length - score;
+  document.getElementById('bd-total').textContent = quiz.length;
+  
+  showScreen('result');
+}
+
+function restartQuiz(){
+  showScreen('home');
+  buildTopicGrid();
+}
+
+function renderLB(){
+  const container = document.getElementById('lb-rows');
+  const count = document.getElementById('lb-count');
+  count.textContent = leaderboard.length + ' record' + (leaderboard.length!==1?'s':'');
+  
+  if(leaderboard.length === 0){
+    container.innerHTML = '<div class="lb-empty">No analysts yet. Be the first to complete the worksheet!</div>';
+    return;
+  }
+  
+  container.innerHTML = '';
+  leaderboard.forEach((entry, i) => {
+    const rank = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    const avatar = AVATARS[i % AVATARS.length];
+    const initials = (entry.name || 'U').split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+    const row = document.createElement('div');
+    row.className = 'lb-row' + (entry.name === currentUser.name ? ' highlight' : '');
+    row.innerHTML = `
+      <div class="lb-rank ${rank}">${i+1}</div>
+      <div class="lb-avatar" style="background:${avatar}">${initials}</div>
+      <div class="lb-info">
+        <div class="lb-name">${entry.name} ${entry.name===currentUser.name?'<span class="badge badge-you">You</span>':''}</div>
+        <div class="lb-meta">${entry.date} · ID: ${entry.reg || 'N/A'}</div>
+      </div>
+      <div class="lb-score-wrap">
+        <div class="lb-score">${entry.score}/${entry.total}</div>
+        <div class="lb-pct">${entry.pct}%</div>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function postComment(){
+  const input = document.getElementById('comment-input');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  const q = quiz[cur];
+  if(!q.comments) q.comments = [];
+  q.comments.push({author: currentUser.name, text, time: new Date().toLocaleTimeString()});
+  renderComments();
+}
+
+function renderComments(){
+  const list = document.getElementById('comments-list');
+  const q = quiz[cur];
+  if(!q.comments || q.comments.length === 0){
+    list.innerHTML = '<div class="no-comments">No annotations yet. Be the first to comment.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  q.comments.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'comment';
+    div.innerHTML = `<div class="comment-author">${c.author}</div><div class="comment-text">${c.text}</div><div class="comment-time">${c.time}</div>`;
+    list.appendChild(div);
+  });
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  buildTopicGrid();
+  document.getElementById('stat-players').textContent = leaderboard.length;
+});
+
+// Goodbye
+</script>
+</body>
+</html>
